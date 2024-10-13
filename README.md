@@ -1,6 +1,6 @@
 # Bingo Card Generator
 
-This project is a web application that allows users to generate custom bingo cards for 90-ball or 75-ball bingo games. Users can create multiple unique cards, customize them with an occasion name, and download them as a PDF for easy printing.
+This project is a web application that allows users to generate custom bingo cards for 90-ball or 75-ball bingo games. Users can create multiple unique cards, customize them with an occasion name, and download them as a PDF for easy printing. Additionally, users can host their own bingo games online, making it a fun and interactive experience for family and friends.
 
 ## Features
 
@@ -9,6 +9,7 @@ This project is a web application that allows users to generate custom bingo car
 - Option to include a FREE space
 - Generate multiple unique cards at once
 - Download generated cards as a PDF
+- Host online bingo games
 
 ## Technologies Used
 
@@ -65,6 +66,7 @@ This project is a web application that allows users to generate custom bingo car
 4. Choose whether to include a FREE space (optional).
 5. Click "Generate Cards" to create your bingo cards.
 6. Use the "Download Cards as PDF" button to save your cards for printing.
+7. To host a bingo game, click on Play Bingo, select your categories, and the host will generate random numbers for the bingo game
 
 ## Contributing
 
