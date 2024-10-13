@@ -1,6 +1,24 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
+
+// Custom Toggle Switch Component
+const ToggleSwitch = ({ isOn, handleToggle }) => {
+  return (
+    <label className="flex items-center cursor-pointer">
+      <div className="relative">
+        <input
+          type="checkbox"
+          className="sr-only"
+          checked={isOn}
+          onChange={handleToggle}
+        />
+        <div className={`block w-14 h-8 rounded-full ${isOn ? 'bg-green-400' : 'bg-gray-400'}`}></div>
+        <div className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition ${isOn ? 'transform translate-x-6' : ''}`}></div>
+      </div>
+    </label>
+  );
+};
 
 function Page({ params }) {
   const { bingoType } = params;
@@ -9,8 +27,51 @@ function Page({ params }) {
   const [showResetConfirmation, setShowResetConfirmation] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [animatingNumber, setAnimatingNumber] = useState(null);
-
+  const [isAudioEnabled, setIsAudioEnabled] = useState(true);
+  
   const totalNumbers = bingoType === "90-ball" ? 90 : 75;
+  const audioContextRef = useRef(null);
+  const oscillatorRef = useRef(null);
+
+  useEffect(() => {
+    // Initialize audio context
+    audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    
+    return () => {
+      // Cleanup audio context on component unmount
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
+    };
+  }, []);
+
+  const playSound = (frequency) => {
+    if (!isAudioEnabled || !audioContextRef.current) return;
+
+    // Stop previous oscillator if it exists
+    if (oscillatorRef.current) {
+      oscillatorRef.current.stop();
+    }
+
+    // Create and configure oscillator
+    const oscillator = audioContextRef.current.createOscillator();
+    const gainNode = audioContextRef.current.createGain();
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(frequency, audioContextRef.current.currentTime);
+    gainNode.gain.setValueAtTime(0.1, audioContextRef.current.currentTime);
+
+    // Connect and start
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContextRef.current.destination);
+    oscillator.start();
+    oscillatorRef.current = oscillator;
+
+    // Stop after a short duration
+    setTimeout(() => {
+      oscillator.stop();
+      oscillatorRef.current = null;
+    }, 100);
+  };
 
   const generateRandomNumber = () => {
     if (generatedNumbers.length === totalNumbers) {
@@ -27,6 +88,9 @@ function Page({ params }) {
         randomNum = Math.floor(Math.random() * totalNumbers) + 1;
       } while (generatedNumbers.includes(randomNum));
       setAnimatingNumber(randomNum);
+      
+      // Play sound with frequency based on the number
+      playSound(200 + randomNum * 10);
     }, 100);
 
     setTimeout(() => {
@@ -40,6 +104,9 @@ function Page({ params }) {
       setRecentNumber(finalNumber);
       setAnimatingNumber(null);
       setIsGenerating(false);
+
+      // Play a final "success" sound
+      playSound(800);
     }, animationDuration);
   };
 
@@ -47,6 +114,10 @@ function Page({ params }) {
     setGeneratedNumbers([]);
     setRecentNumber(null);
     setShowResetConfirmation(false);
+  };
+
+  const toggleAudio = () => {
+    setIsAudioEnabled(!isAudioEnabled);
   };
 
   return (
@@ -102,6 +173,12 @@ function Page({ params }) {
             >
               Reset Game
             </button>
+
+            {/* Audio Toggle */}
+            <div className="flex items-center justify-between bg-white p-3 rounded-lg shadow">
+              <span className="text-lg font-semibold text-gray-700">Audio</span>
+              <ToggleSwitch isOn={isAudioEnabled} handleToggle={toggleAudio} />
+            </div>
           </div>
 
           {/* Generated Numbers Section */}
