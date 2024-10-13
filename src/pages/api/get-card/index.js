@@ -12,15 +12,13 @@ async function handler(req, res) {
       if (isNaN(count) || count <= 0) {
         return res.status(400).json({ error: "Invalid count value" });
       }
-      // Fetch random cards using aggregation and shuffling
-      const cards = await BingoCard.find({
-        bingoType: type,
-        withFreeSpace,
-      }).limit(count);
 
-      cards.forEach((element) => {
-        console.log(element);
-      });
+      // Use MongoDB's aggregation pipeline for true randomness
+      const cards = await BingoCard.aggregate([
+        { $match: { bingoType: type, withFreeSpace } },
+        { $sample: { size: count } }
+      ]);
+
       if (!cards || cards.length === 0) {
         return res.status(404).json({
           success: false,
@@ -28,7 +26,7 @@ async function handler(req, res) {
         });
       }
 
-      return res.status(200).json({ success: true, cards: cards });
+      return res.status(200).json({ success: true, cards });
     } catch (error) {
       console.error("Error fetching bingo cards:", error);
       return res.status(400).json({ success: false, error: error.message });

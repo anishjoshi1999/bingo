@@ -40,13 +40,20 @@ async function handler(req, res) {
         const withFreeSpaceBool = withFreeSpace === "true"; // Convert to boolean
         if (bingoType === "90-ball") {
           card = generateBingo90Card(withFreeSpaceBool); // Generate a Bingo 90 card
-        } else {
+        } else if (bingoType === "75-ball") {
           card = generateBingo75Card(withFreeSpaceBool); // Generate a Bingo 75 card
+        } else {
+          console.error("Bingo Type did not match:");
+          return res.status(400).json({ success: false });
         }
 
         // Check if the card is unique
         if (!existingCardSet.has(JSON.stringify(card))) {
-          cardsToSave.push({ card, bingoType, withFreeSpace: withFreeSpaceBool }); // Prepare the card for saving
+          cardsToSave.push({
+            card,
+            bingoType,
+            withFreeSpace: withFreeSpaceBool,
+          }); // Prepare the card for saving
           existingCardSet.add(JSON.stringify(card)); // Add to the set
           uniqueCardsCount++; // Increment count of unique cards saved
         }
