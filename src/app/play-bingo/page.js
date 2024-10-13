@@ -2,13 +2,13 @@
 import React from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
-const BingoOptionsPage = () => {
+const PlayBingoOptionsPage = () => {
   return (
     <div>
       <Navbar></Navbar>
       <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-indigo-100 to-purple-200 p-6 sm:p-12">
         <h1 className="text-4xl sm:text-5xl font-bold mb-8 text-indigo-800 text-center">
-          Create Your Bingo Game
+          Choose Your Bingo Game
         </h1>
 
         <p className="text-lg text-gray-700 mb-6 text-center px-4">
@@ -17,7 +17,7 @@ const BingoOptionsPage = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-5xl">
           {/* 1-90 Number Bingo */}
-          <Link href="/create-ticket/90-ball" passHref>
+          <Link href="/play-bingo/90-ball" passHref>
             <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105 p-6 text-center">
               <h2 className="text-xl font-semibold text-indigo-600 mb-2">
                 1-90 Number Bingo
@@ -27,13 +27,13 @@ const BingoOptionsPage = () => {
                 and gatherings.
               </p>
               <button className="w-full px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg">
-                Create Now
+                Play Now
               </button>
             </div>
           </Link>
 
           {/* 1-75 Number Bingo */}
-          <Link href="/create-ticket/75-ball" passHref>
+          <Link href="/play-bingo/75-ball" passHref>
             <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105 p-6 text-center">
               <h2 className="text-xl font-semibold text-purple-600 mb-2">
                 1-75 Number Bingo
@@ -43,13 +43,13 @@ const BingoOptionsPage = () => {
                 for social events!
               </p>
               <button className="w-full px-4 py-2 bg-purple-600 text-white font-semibold rounded-lg">
-                Create Now
+                Play Now
               </button>
             </div>
           </Link>
 
           {/* Blackout Bingo */}
-          {/* <Link href="/bingo/blackout" passHref>
+          {/* <Link href="#" passHref>
             <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105 p-6 text-center">
               <h2 className="text-xl font-semibold text-green-600 mb-2">
                 Blackout Bingo
@@ -59,13 +59,13 @@ const BingoOptionsPage = () => {
                 bingo experience!
               </p>
               <button className="w-full px-4 py-2 bg-green-600 text-white font-semibold rounded-lg">
-                Create Now
+                Play Now
               </button>
             </div>
           </Link> */}
 
           {/* Speed Bingo */}
-          {/* <Link href="/bingo/speed" passHref>
+          {/* <Link href="#" passHref>
             <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105 p-6 text-center">
               <h2 className="text-xl font-semibold text-yellow-600 mb-2">
                 Speed Bingo
@@ -75,7 +75,7 @@ const BingoOptionsPage = () => {
                 you keep up?
               </p>
               <button className="w-full px-4 py-2 bg-yellow-600 text-white font-semibold rounded-lg">
-                Create Now
+                Play Now
               </button>
             </div>
           </Link> */}
@@ -90,4 +90,4 @@ const BingoOptionsPage = () => {
   );
 };
 
-export default BingoOptionsPage;
+export default PlayBingoOptionsPage;

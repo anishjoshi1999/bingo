@@ -1,26 +1,22 @@
 const mongoose = require("mongoose");
-import slugify from "slugify";
 const bingoCardSchema = new mongoose.Schema(
   {
-    occasionName: { type: String, required: true, unique: true },
     card: {
-      type: [[Number]], // 2D array to hold the Bingo card numbers (3 rows x 9 columns)
+      type: [[mongoose.Schema.Types.Mixed]], // 2D array to hold the Bingo card numbers (3 rows x 9 columns for 90-ball, 5 rows x 5 columns for 75-ball)
       required: true,
     },
-    slug: { type: String, unique: true },
+    withFreeSpace: { type: Boolean, default: false },
+    bingoType: {
+      type: String,
+      enum: ['90-ball', '75-ball'], // Define enum values for bingo types
+      required: true, // Make this field required
+    },
   },
   { timestamps: true }
 );
-// Pre-save middleware to generate slug
-bingoCardSchema.pre("save", async function (next) {
-  const count = await mongoose.models.BingoCard.countDocuments({});
-  if (this.occasionName) {
-    let temp = `${this.occasionName} ${count}`;
-    this.slug = slugify(temp, { lower: true, strict: true });
-  }
+// Create a compound index to enforce uniqueness based on card and type
+bingoCardSchema.index({ card: 1, bingoType: 1, withFreeSpace: 1 }, { unique: true });
 
-  next();
-});
 const BingoCard =
   mongoose.models.BingoCard || mongoose.model("BingoCard", bingoCardSchema);
 

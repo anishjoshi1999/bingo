@@ -9,9 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "framer-motion": "^11.11.8",
     "html2canvas": "^1.4.1",
-    "lucide-react": "^0.452.0",
+    "jspdf": "^2.5.2",
     "mongoose": "^8.7.0",
     "next": "14.2.15",
     "react": "^18",
