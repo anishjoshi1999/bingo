@@ -188,12 +188,12 @@ function Page({ params }) {
           <div className="flex flex-wrap gap-2 justify-center">
             {generatedNumbers.map((num, index) => (
               <div
-                key={`ball-${index + 1}`}
+                key={`call-${index + 1}`}
                 className={`flex flex-col items-center justify-center w-24 h-12 rounded-lg shadow-md transition-all duration-200
                   ${index === generatedNumbers.length - 1 ? "bg-red-500 text-white animate-pulse" : "bg-blue-300 hover:bg-blue-400"}`}
               >
                 <span className="text-lg font-bold">{num}</span>
-                <span className="text-xs text-gray-800">ID: ball-{index + 1}</span>
+                <span className="text-xs text-gray-800">ball-{index + 1}</span>
               </div>
             ))}
           </div>

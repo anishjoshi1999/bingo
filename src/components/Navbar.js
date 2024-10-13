@@ -20,8 +20,8 @@ const Navbar = () => {
             <div className="ml-10 flex items-baseline space-x-4">
               <NavLink href="/" text="Home" />
               <NavLink href="/play-bingo" text="Play Bingo" />
-              <NavLink href="/about" text="About Us" />
-              <NavLink href="/contact" text="Contact" />
+              {/* <NavLink href="/about" text="About Us" />
+              <NavLink href="/contact" text="Contact" /> */}
             </div>
           </div>
           <div className="-mr-2 flex md:hidden">

@@ -1,14 +1,17 @@
 "use client";
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
+
 const Page = ({ params }) => {
   const { type } = params;
-  const [cardCount, setCardCount] = useState(1); // Default to 1 card
-  const [occasionName, setOccasionName] = useState(""); // State for Occasion Name
+  const [cardCount, setCardCount] = useState(1);
+  const [occasionName, setOccasionName] = useState("");
   const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [freeSpace, setFreeSpace] = useState(false); // State for FREE space checkbox
+  const [freeSpace, setFreeSpace] = useState(false);
 
   const handleCreateCards = async () => {
     setLoading(true);
@@ -33,7 +36,7 @@ const Page = ({ params }) => {
 
       const data = await response.json();
       if (data.success) {
-        setCards(data.cards); // Assuming cards are returned in the response
+        setCards(data.cards);
       } else {
         throw new Error(data.message || "Failed to generate cards");
       }
@@ -44,9 +47,56 @@ const Page = ({ params }) => {
     }
   };
 
+  const handleDownloadPDF = async () => {
+    const pdf = new jsPDF();
+    const cardsContainer = document.getElementById("bingo-cards-container");
+
+    if (!cardsContainer) {
+      setError("No cards to download");
+      return;
+    }
+
+    const cards = cardsContainer.getElementsByClassName("bingo-card");
+
+    for (let i = 0; i < cards.length; i += 2) {
+      // Add a new page for every two cards
+      if (i !== 0) {
+        pdf.addPage();
+      }
+
+      // Capture the first card using html2canvas
+      const card1 = await html2canvas(cards[i], {
+        scale: 1,
+        useCORS: true,
+      });
+      const imgData1 = card1.toDataURL("image/png");
+
+      // If there is a second card, capture it as well
+      let imgData2;
+      if (cards[i + 1]) {
+        const card2 = await html2canvas(cards[i + 1], {
+          scale: 1,
+          useCORS: true,
+        });
+        imgData2 = card2.toDataURL("image/png");
+      }
+
+      // Add the first card image to the top half of the page
+      pdf.addImage(imgData1, "PNG", 10, 10, 190, 130); // Adjust size to half page
+
+      // If there is a second card, add it to the bottom half of the page
+      if (imgData2) {
+        pdf.addImage(imgData2, "PNG", 10, 150, 190, 130); // Adjust size and position for second card
+      }
+    }
+
+    // Save the PDF
+    pdf.save(`${occasionName || "bingo"}_cards.pdf`);
+  };
+
   return (
     <>
-      <Navbar></Navbar>
+      <Navbar />
       <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-indigo-100 to-purple-200 p-6 sm:p-12">
         <h1 className="text-4xl sm:text-5xl font-bold mb-8 text-indigo-800 text-center">
           {type === "90-ball"
@@ -111,15 +161,21 @@ const Page = ({ params }) => {
         {error && <p className="mt-4 text-red-600">{error}</p>}
 
         {cards.length > 0 && (
-          <div className="mt-8 w-full">
+          <div className="mt-8 w-full" id="bingo-cards-container">
             <h2 className="text-2xl font-semibold text-indigo-700 mb-4">
               Your Bingo Cards
             </h2>
+            <button
+              onClick={handleDownloadPDF}
+              className="mb-4 px-4 py-2 bg-green-600 text-white font-semibold rounded-lg"
+            >
+              Download Cards as PDF
+            </button>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-auto">
               {cards.map((card, index) => (
                 <div
                   key={index}
-                  className="min-w-full bg-white rounded-lg shadow-lg overflow-hidden"
+                  className="min-w-full bg-white rounded-lg shadow-lg overflow-hidden bingo-card print:block print:mb-8"
                 >
                   <div className="bg-indigo-600 text-white p-4 flex justify-between items-center">
                     <h3 className="text-2xl font-bold">
