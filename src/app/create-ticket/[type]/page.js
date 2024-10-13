@@ -82,7 +82,7 @@ const Page = ({ params }) => {
             required
           />
           <p className="mt-4 text-gray-600 italic">
-            Note: Create all the cards at one go.
+            Note: Generate all the cards in one go.
           </p>
         </div>
 
@@ -106,7 +106,7 @@ const Page = ({ params }) => {
           {loading ? "Generating Cards..." : "Generate Cards"}
         </button>
         <p className="mt-4 text-gray-600 italic">
-          Note: All Generated Card is Unique.
+          Note: All generated cards are unique
         </p>
         {error && <p className="mt-4 text-red-600">{error}</p>}
 

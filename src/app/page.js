@@ -24,12 +24,6 @@ const HomePage = () => {
             </button>
           </Link>
 
-          <Link href="/fetch-ticket" passHref>
-            <button className="w-full px-6 py-3 bg-purple-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-purple-700 transition duration-300 ease-in-out transform hover:scale-105">
-              Get Bingo Card
-            </button>
-          </Link>
-
           <Link href="/play-bingo" passHref>
             <button className="w-full px-6 py-3 bg-pink-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-pink-700 transition duration-300 ease-in-out transform hover:scale-105">
               Play Bingo
