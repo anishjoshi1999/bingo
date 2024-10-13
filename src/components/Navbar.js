@@ -12,7 +12,7 @@ const Navbar = () => {
           <div className="flex-shrink-0">
             <Link href="/" passHref>
               <span className="text-2xl font-bold text-white">
-                Lucky Stars Bingo
+                BingoZone.Online
               </span>
             </Link>
           </div>

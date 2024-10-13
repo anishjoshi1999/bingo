@@ -9,7 +9,7 @@ const HomePage = () => {
       <Navbar></Navbar>
       <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-indigo-100 to-purple-200 p-6 sm:p-12">
         <h1 className="text-4xl sm:text-5xl font-bold mb-8 text-indigo-800 text-center">
-          Welcome to Lucky Stars Bingo
+          Welcome to BingoZone.Online
         </h1>
 
         <p className="text-lg text-gray-700 mb-6 text-center px-4">
@@ -32,7 +32,7 @@ const HomePage = () => {
         </div>
 
         <footer className="mt-12 w-full text-center text-gray-600">
-          <p>&copy; 2024 Lucky Stars Bingo. All rights reserved.</p>
+          <p>&copy; 2024 Bingozone.online. All rights reserved.</p>
           <p className="mt-2">Play responsibly. Must be 18+ to play.</p>
         </footer>
       </div>

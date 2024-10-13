@@ -82,7 +82,7 @@ const BingoOptionsPage = () => {
         </div>
 
         <footer className="mt-12 w-full text-center text-gray-600">
-          <p>&copy; 2024 Lucky Stars Bingo. All rights reserved.</p>
+          <p>&copy; 2024 Bingozone.online. All rights reserved.</p>
           <p className="mt-2">Play responsibly. Must be 18+ to play.</p>
         </footer>
       </div>

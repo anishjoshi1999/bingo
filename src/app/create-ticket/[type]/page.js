@@ -179,7 +179,7 @@ const Page = ({ params }) => {
                 >
                   <div className="bg-indigo-600 text-white p-4 flex justify-between items-center">
                     <h3 className="text-2xl font-bold">
-                      Lucky Stars {type === "90-ball" ? "90" : "75"} Ball Bingo
+                    Bingo Zone {type === "90-ball" ? "90" : "75"} Ball Bingo
                     </h3>
                     <span className="text-sm">Card #{index + 1}</span>
                   </div>
