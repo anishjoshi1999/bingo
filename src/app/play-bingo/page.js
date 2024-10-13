@@ -49,7 +49,7 @@ const PlayBingoOptionsPage = () => {
           </Link>
 
           {/* Blackout Bingo */}
-          <Link href="#" passHref>
+          {/* <Link href="#" passHref>
             <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105 p-6 text-center">
               <h2 className="text-xl font-semibold text-green-600 mb-2">
                 Blackout Bingo
@@ -62,10 +62,10 @@ const PlayBingoOptionsPage = () => {
                 Play Now
               </button>
             </div>
-          </Link>
+          </Link> */}
 
           {/* Speed Bingo */}
-          <Link href="#" passHref>
+          {/* <Link href="#" passHref>
             <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105 p-6 text-center">
               <h2 className="text-xl font-semibold text-yellow-600 mb-2">
                 Speed Bingo
@@ -78,7 +78,7 @@ const PlayBingoOptionsPage = () => {
                 Play Now
               </button>
             </div>
-          </Link>
+          </Link> */}
         </div>
 
         <footer className="mt-12 w-full text-center text-gray-600">
