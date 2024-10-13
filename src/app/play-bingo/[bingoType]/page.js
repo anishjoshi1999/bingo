@@ -7,40 +7,40 @@ function Page({ params }) {
   const [generatedNumbers, setGeneratedNumbers] = useState([]);
   const [recentNumber, setRecentNumber] = useState(null);
   const [showResetConfirmation, setShowResetConfirmation] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false); // State to track number generation
-  const [selectedNum, setSelectedNum] = useState(null); // State for the selected number
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [animatingNumber, setAnimatingNumber] = useState(null);
 
   const totalNumbers = bingoType === "90-ball" ? 90 : 75;
 
-  const generateRandomNumber = async () => {
+  const generateRandomNumber = () => {
     if (generatedNumbers.length === totalNumbers) {
       alert("All numbers have been drawn!");
       return;
     }
 
-    setIsGenerating(true); // Start generating state
-    setSelectedNum(null); // Reset selected number
+    setIsGenerating(true);
+    const animationDuration = Math.floor(Math.random() * 4000) + 1000; // Random duration between 1 to 5 seconds
 
-    // Random delay between 1 to 10 seconds
-    const randomDelay = Math.floor(Math.random() * 10000) + 1000; // 1000ms to 10000ms
-
-    // Animate the selection
-    let intervalId = setInterval(() => {
+    const animationInterval = setInterval(() => {
       let randomNum;
       do {
         randomNum = Math.floor(Math.random() * totalNumbers) + 1;
       } while (generatedNumbers.includes(randomNum));
-      setSelectedNum(randomNum); // Update the selected number
-    }, 200); // Change number every 200ms
+      setAnimatingNumber(randomNum);
+    }, 100);
 
-    // Wait for random delay, then stop animation and finalize number
-    await new Promise((resolve) => setTimeout(resolve, randomDelay));
-    clearInterval(intervalId); // Stop the number animation
-    setIsGenerating(false); // Stop generating state
+    setTimeout(() => {
+      clearInterval(animationInterval);
+      let finalNumber;
+      do {
+        finalNumber = Math.floor(Math.random() * totalNumbers) + 1;
+      } while (generatedNumbers.includes(finalNumber));
 
-    // Finalize the chosen number
-    setGeneratedNumbers((prev) => [...prev, selectedNum]);
-    setRecentNumber(selectedNum);
+      setGeneratedNumbers((prev) => [...prev, finalNumber]);
+      setRecentNumber(finalNumber);
+      setAnimatingNumber(null);
+      setIsGenerating(false);
+    }, animationDuration);
   };
 
   const resetGame = () => {
@@ -69,8 +69,10 @@ function Page({ params }) {
                       ? num === recentNumber
                         ? "bg-red-500 text-white animate-pulse"
                         : "bg-green-300"
+                      : num === animatingNumber
+                      ? "bg-yellow-300 animate-pulse"
                       : "bg-gray-200 hover:bg-gray-300"
-                    } ${selectedNum === num ? "border-4 border-blue-500 transform scale-125" : ""}`} // Highlight selected number
+                    }`}
                 >
                   {num}
                 </div>
@@ -85,15 +87,18 @@ function Page({ params }) {
           <div className="flex flex-col gap-4 mb-8">
             <button
               onClick={generateRandomNumber}
-              className={`px-6 py-3 ${isGenerating ? "bg-gray-400" : "bg-indigo-600 hover:bg-indigo-700"} text-white font-semibold rounded-lg shadow-lg transition duration-300 transform hover:scale-105`}
-              disabled={isGenerating} // Disable button while generating
+              disabled={isGenerating}
+              className={`px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg transition duration-300 transform hover:scale-105
+                ${isGenerating ? 'opacity-50 cursor-not-allowed' : 'hover:bg-indigo-700'}`}
             >
-              {isGenerating ? "Generating..." : "Generate Number"}
+              {isGenerating ? 'Generating...' : 'Generate Number'}
             </button>
 
             <button
               onClick={() => setShowResetConfirmation(true)}
-              className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-lg transition duration-300 transform hover:scale-105"
+              disabled={isGenerating}
+              className={`px-6 py-3 bg-red-500 text-white font-semibold rounded-lg shadow-lg transition duration-300 transform hover:scale-105
+                ${isGenerating ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'}`}
             >
               Reset Game
             </button>
@@ -106,12 +111,12 @@ function Page({ params }) {
           <div className="flex flex-wrap gap-2 justify-center">
             {generatedNumbers.map((num, index) => (
               <div
-                key={`ball-${index + 1}`} // Generate ID as ball-1, ball-2, etc.
+                key={`ball-${index + 1}`}
                 className={`flex flex-col items-center justify-center w-24 h-12 rounded-lg shadow-md transition-all duration-200
                   ${index === generatedNumbers.length - 1 ? "bg-red-500 text-white animate-pulse" : "bg-blue-300 hover:bg-blue-400"}`}
               >
                 <span className="text-lg font-bold">{num}</span>
-                <span className="text-xs text-gray-800">ID: ball-{index + 1}</span> {/* Display ID */}
+                <span className="text-xs text-gray-800">ID: ball-{index + 1}</span>
               </div>
             ))}
           </div>
