@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
+import { Loader2 } from "lucide-react";
 
 const Page = ({ params }) => {
   const { type } = params;
@@ -10,6 +11,7 @@ const Page = ({ params }) => {
   const [occasionName, setOccasionName] = useState("");
   const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [downloadLoading, setDownloadLoading] = useState(false);
   const [error, setError] = useState("");
   const [freeSpace, setFreeSpace] = useState(false);
 
@@ -48,50 +50,67 @@ const Page = ({ params }) => {
   };
 
   const handleDownloadPDF = async () => {
+    setDownloadLoading(true);
     const pdf = new jsPDF();
     const cardsContainer = document.getElementById("bingo-cards-container");
-
+  
     if (!cardsContainer) {
       setError("No cards to download");
+      setDownloadLoading(false);
       return;
     }
-
+  
     const cards = cardsContainer.getElementsByClassName("bingo-card");
-
-    for (let i = 0; i < cards.length; i += 2) {
-      // Add a new page for every two cards
-      if (i !== 0) {
-        pdf.addPage();
+  
+    // PDF dimensions and margin setup
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 10;
+    const maxCardWidth = (pageWidth - 3 * margin) / 2;
+    const maxCardHeight = (pageHeight - 5 * margin) / 4;
+  
+    try {
+      for (let i = 0; i < cards.length; i += 8) {
+        if (i !== 0) {
+          pdf.addPage();
+        }
+  
+        for (let j = 0; j < 8 && (i + j) < cards.length; j++) {
+          const card = await html2canvas(cards[i + j], {
+            scale: 2,
+            useCORS: true,
+          });
+          const imgData = card.toDataURL("image/png");
+  
+          const originalWidth = card.width;
+          const originalHeight = card.height;
+          const aspectRatio = originalWidth / originalHeight;
+  
+          let cardWidth, cardHeight;
+          if (aspectRatio > 1) {
+            cardWidth = Math.min(maxCardWidth, originalWidth);
+            cardHeight = cardWidth / aspectRatio;
+          } else {
+            cardHeight = Math.min(maxCardHeight, originalHeight);
+            cardWidth = cardHeight * aspectRatio;
+          }
+  
+          const xPosition = margin + (j % 2) * (maxCardWidth + margin);
+          const yPosition = margin + Math.floor(j / 2) * (maxCardHeight + margin);
+  
+          const xCentered = xPosition + (maxCardWidth - cardWidth) / 2;
+          const yCentered = yPosition + (maxCardHeight - cardHeight) / 2;
+  
+          pdf.addImage(imgData, "PNG", xCentered, yCentered, cardWidth, cardHeight);
+        }
       }
-
-      // Capture the first card using html2canvas
-      const card1 = await html2canvas(cards[i], {
-        scale: 1,
-        useCORS: true,
-      });
-      const imgData1 = card1.toDataURL("image/png");
-
-      // If there is a second card, capture it as well
-      let imgData2;
-      if (cards[i + 1]) {
-        const card2 = await html2canvas(cards[i + 1], {
-          scale: 1,
-          useCORS: true,
-        });
-        imgData2 = card2.toDataURL("image/png");
-      }
-
-      // Add the first card image to the top half of the page
-      pdf.addImage(imgData1, "PNG", 10, 10, 190, 130); // Adjust size to half page
-
-      // If there is a second card, add it to the bottom half of the page
-      if (imgData2) {
-        pdf.addImage(imgData2, "PNG", 10, 150, 190, 130); // Adjust size and position for second card
-      }
+  
+      pdf.save(`${occasionName || "bingo"}_cards.pdf`);
+    } catch (err) {
+      setError("Failed to generate PDF. Please try again.");
+    } finally {
+      setDownloadLoading(false);
     }
-
-    // Save the PDF
-    pdf.save(`${occasionName || "bingo"}_cards.pdf`);
   };
 
   return (
@@ -167,9 +186,17 @@ const Page = ({ params }) => {
             </h2>
             <button
               onClick={handleDownloadPDF}
-              className="mb-4 px-4 py-2 bg-green-600 text-white font-semibold rounded-lg"
+              disabled={downloadLoading}
+              className="mb-4 px-4 py-2 bg-green-600 text-white font-semibold rounded-lg flex items-center gap-2 disabled:bg-green-400"
             >
-              Download Cards as PDF
+              {downloadLoading ? (
+                <>
+                  <Loader2 className="animate-spin" size={20} />
+                  <span>Please wait, preparing your tickets...</span>
+                </>
+              ) : (
+                "Download Cards as PDF"
+              )}
             </button>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-auto">
               {cards.map((card, index) => (
@@ -179,7 +206,7 @@ const Page = ({ params }) => {
                 >
                   <div className="bg-indigo-600 text-white p-4 flex justify-between items-center">
                     <h3 className="text-2xl font-bold">
-                    Bingo Zone {type === "90-ball" ? "90" : "75"} Ball Bingo
+                      Bingo Zone {type === "90-ball" ? "90" : "75"} Ball Bingo
                     </h3>
                     <span className="text-sm">Card #{index + 1}</span>
                   </div>
@@ -199,8 +226,7 @@ const Page = ({ params }) => {
                                 className={`border-2 border-indigo-300 px-4 py-3 text-xl font-medium text-center ${
                                   number ||
                                   (card.withFreeSpace &&
-                                    rowIndex ===
-                                      Math.floor(card.card.length / 2) &&
+                                    rowIndex === Math.floor(card.card.length / 2) &&
                                     colIndex === Math.floor(row.length / 2))
                                     ? "bg-indigo-100"
                                     : "bg-gray-200"
@@ -208,8 +234,7 @@ const Page = ({ params }) => {
                               >
                                 {number ||
                                   (card.withFreeSpace &&
-                                  rowIndex ===
-                                    Math.floor(card.card.length / 2) &&
+                                  rowIndex === Math.floor(card.card.length / 2) &&
                                   colIndex === Math.floor(row.length / 2)
                                     ? "FREE"
                                     : "")}
@@ -219,6 +244,9 @@ const Page = ({ params }) => {
                         ))}
                       </tbody>
                     </table>
+                  </div>
+                  <div className="bg-indigo-600 text-white p-4 flex justify-between items-center">
+                    <span className="text-sm">Code: {card.code}</span>
                   </div>
                 </div>
               ))}

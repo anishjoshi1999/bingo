@@ -11,6 +11,11 @@ const bingoCardSchema = new mongoose.Schema(
       enum: ['90-ball', '75-ball'], // Define enum values for bingo types
       required: true, // Make this field required
     },
+    code: {
+      type: String,
+      unique:true,
+      required: true,
+    }
   },
   { timestamps: true }
 );

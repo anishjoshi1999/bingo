@@ -2,7 +2,13 @@ import dbConnect from "@/lib/dbConnect";
 import BingoCard from "@/Models/BingoCard";
 import generateBingo90Card from "@/lib/generateBingo90Card";
 import generateBingo75Card from "@/lib/generateBingo75Card";
-
+import Randomstring from "randomstring";
+function generateUniqueString() {
+  return Randomstring.generate({
+    length: 6,   // Length of the string
+    charset: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'  // Uppercase letters and numbers
+  });
+}
 async function handler(req, res) {
   await dbConnect(); // Connect to the database
 
@@ -53,6 +59,7 @@ async function handler(req, res) {
             card,
             bingoType,
             withFreeSpace: withFreeSpaceBool,
+            code: generateUniqueString()
           }); // Prepare the card for saving
           existingCardSet.add(JSON.stringify(card)); // Add to the set
           uniqueCardsCount++; // Increment count of unique cards saved

@@ -25,3 +25,14 @@ body {
     text-wrap: balance;
   }
 }
+@media print {
+  .bingo-card {
+    page-break-inside: avoid;
+    margin-bottom: 20px; /* Adjust spacing between cards */
+  }
+  #bingo-cards-container {
+    display: grid;
+    grid-template-rows: repeat(4, auto); /* Ensure 4 cards are printed vertically */
+    gap: 20px; /* Spacing between cards */
+  }
+}
