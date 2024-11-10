@@ -47,38 +47,6 @@ const PlayBingoOptionsPage = () => {
               </button>
             </div>
           </Link>
-
-          {/* Blackout Bingo */}
-          {/* <Link href="#" passHref>
-            <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105 p-6 text-center">
-              <h2 className="text-xl font-semibold text-green-600 mb-2">
-                Blackout Bingo
-              </h2>
-              <p className="text-gray-600 mb-4">
-                Be the first to cover all your numbers for a thrilling blackout
-                bingo experience!
-              </p>
-              <button className="w-full px-4 py-2 bg-green-600 text-white font-semibold rounded-lg">
-                Play Now
-              </button>
-            </div>
-          </Link> */}
-
-          {/* Speed Bingo */}
-          {/* <Link href="#" passHref>
-            <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105 p-6 text-center">
-              <h2 className="text-xl font-semibold text-yellow-600 mb-2">
-                Speed Bingo
-              </h2>
-              <p className="text-gray-600 mb-4">
-                A fast-paced version of bingo that keeps you on your toes! Can
-                you keep up?
-              </p>
-              <button className="w-full px-4 py-2 bg-yellow-600 text-white font-semibold rounded-lg">
-                Play Now
-              </button>
-            </div>
-          </Link> */}
         </div>
 
         <footer className="mt-12 w-full text-center text-gray-600">

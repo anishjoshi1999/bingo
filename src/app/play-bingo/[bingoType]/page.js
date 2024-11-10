@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
-
+import Head from "next/head";
 // Custom Toggle Switch Component
 const ToggleSwitch = ({ isOn, handleToggle }) => {
   return (
@@ -159,6 +159,25 @@ function Page({ params }) {
 
   return (
     <>
+      <Head>
+        <title>
+          {bingoType === "90-ball" ? "90-Ball Bingo" : "75-Ball Bingo"} | Fun
+          Bingo Game
+        </title>
+        <meta
+          name="description"
+          content="Play a fun game of Bingo! Generate numbers and check if you have won. Play 90-ball or 75-ball Bingo!"
+        />
+        <meta
+          name="keywords"
+          content="Bingo, 90-ball Bingo, 75-ball Bingo, Play Bingo, Bingo Game"
+        />
+        <meta property="og:title" content="Bingo Game | Play Now" />
+        <meta
+          property="og:description"
+          content="Join the Bingo fun! Generate random numbers and check if you have a winner."
+        />
+      </Head>
       <Navbar />
       <div className="flex min-h-screen bg-gradient-to-b from-indigo-100 to-purple-200 p-4">
         {/* Left side - Number table (70% width) */}

@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { Loader2 } from "lucide-react";
+import Head from "next/head";
 
 const Page = ({ params }) => {
   const { type } = params;
@@ -53,39 +54,39 @@ const Page = ({ params }) => {
     setDownloadLoading(true);
     const pdf = new jsPDF();
     const cardsContainer = document.getElementById("bingo-cards-container");
-  
+
     if (!cardsContainer) {
       setError("No cards to download");
       setDownloadLoading(false);
       return;
     }
-  
+
     const cards = cardsContainer.getElementsByClassName("bingo-card");
-  
+
     // PDF dimensions and margin setup
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
     const margin = 10;
     const maxCardWidth = (pageWidth - 3 * margin) / 2;
     const maxCardHeight = (pageHeight - 5 * margin) / 4;
-  
+
     try {
       for (let i = 0; i < cards.length; i += 8) {
         if (i !== 0) {
           pdf.addPage();
         }
-  
-        for (let j = 0; j < 8 && (i + j) < cards.length; j++) {
+
+        for (let j = 0; j < 8 && i + j < cards.length; j++) {
           const card = await html2canvas(cards[i + j], {
             scale: 2,
             useCORS: true,
           });
           const imgData = card.toDataURL("image/png");
-  
+
           const originalWidth = card.width;
           const originalHeight = card.height;
           const aspectRatio = originalWidth / originalHeight;
-  
+
           let cardWidth, cardHeight;
           if (aspectRatio > 1) {
             cardWidth = Math.min(maxCardWidth, originalWidth);
@@ -94,17 +95,25 @@ const Page = ({ params }) => {
             cardHeight = Math.min(maxCardHeight, originalHeight);
             cardWidth = cardHeight * aspectRatio;
           }
-  
+
           const xPosition = margin + (j % 2) * (maxCardWidth + margin);
-          const yPosition = margin + Math.floor(j / 2) * (maxCardHeight + margin);
-  
+          const yPosition =
+            margin + Math.floor(j / 2) * (maxCardHeight + margin);
+
           const xCentered = xPosition + (maxCardWidth - cardWidth) / 2;
           const yCentered = yPosition + (maxCardHeight - cardHeight) / 2;
-  
-          pdf.addImage(imgData, "PNG", xCentered, yCentered, cardWidth, cardHeight);
+
+          pdf.addImage(
+            imgData,
+            "PNG",
+            xCentered,
+            yCentered,
+            cardWidth,
+            cardHeight
+          );
         }
       }
-  
+
       pdf.save(`${occasionName || "bingo"}_cards.pdf`);
     } catch (err) {
       setError("Failed to generate PDF. Please try again.");
@@ -115,6 +124,41 @@ const Page = ({ params }) => {
 
   return (
     <>
+      <Head>
+        <title>
+          {type === "90-ball" ? "90-Ball Bingo Cards" : "75-Ball Bingo Cards"} |
+          Bingo Card Generator
+        </title>
+        <meta
+          name="description"
+          content={`Generate ${
+            type === "90-ball" ? "90-Ball" : "75-Ball"
+          } Bingo cards for your special occasion. Customize and download them as PDFs.`}
+        />
+        <meta
+          name="keywords"
+          content="bingo cards, 90-ball bingo, 75-ball bingo, occasion bingo cards, bingo card generator, printable bingo cards"
+        />
+        <meta name="robots" content="index, follow" />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:title"
+          content={`Generate ${
+            type === "90-ball" ? "90-Ball" : "75-Ball"
+          } Bingo Cards | Bingo Card Generator`}
+        />
+        <meta
+          property="og:description"
+          content={`Generate customized Bingo cards for your ${
+            occasionName || "special occasion"
+          } with our easy-to-use Bingo Card Generator.`}
+        />
+        <meta property="og:image" content="/bingo-image.jpg" />
+        <meta
+          property="og:url"
+          content={`https://yourwebsite.com/create-bingo-cards`}
+        />
+      </Head>
       <Navbar />
       <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-indigo-100 to-purple-200 p-6 sm:p-12">
         <h1 className="text-4xl sm:text-5xl font-bold mb-8 text-indigo-800 text-center">
@@ -226,7 +270,8 @@ const Page = ({ params }) => {
                                 className={`border-2 border-indigo-300 px-4 py-3 text-xl font-medium text-center ${
                                   number ||
                                   (card.withFreeSpace &&
-                                    rowIndex === Math.floor(card.card.length / 2) &&
+                                    rowIndex ===
+                                      Math.floor(card.card.length / 2) &&
                                     colIndex === Math.floor(row.length / 2))
                                     ? "bg-indigo-100"
                                     : "bg-gray-200"
@@ -234,7 +279,8 @@ const Page = ({ params }) => {
                               >
                                 {number ||
                                   (card.withFreeSpace &&
-                                  rowIndex === Math.floor(card.card.length / 2) &&
+                                  rowIndex ===
+                                    Math.floor(card.card.length / 2) &&
                                   colIndex === Math.floor(row.length / 2)
                                     ? "FREE"
                                     : "")}
